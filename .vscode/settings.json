@@ -1,0 +1,15 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        }
+    },
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "black-formatter.importStrategy": "fromEnvironment",
+    "editor.formatOnSave": true,
+    "ruff.run": "onSave",
+    "ruff.organizeImports": true
+}
