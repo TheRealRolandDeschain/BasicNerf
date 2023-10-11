@@ -25,5 +25,18 @@
     "optimizer": {
         "learning_rate": 5e-4
     },
-    "trainging": {}
+    "training": {
+        "number_of_iterations": 10000,
+        "batch_size": 16384,
+        "one_image_per_step": true,
+        "chunk_size": 16384,
+        "center_crop": true,
+        "center_crop_iterations": 50,
+        "display_rate": 25
+    },
+    "early_stopping": {
+        "warmup_iterations": 100,
+        "warmup_min_fitness": 10.0,
+        "number_of_restarts": 10
+    }
 }

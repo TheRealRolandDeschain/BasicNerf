@@ -13,7 +13,70 @@ import numpy as np
 import torch
 from torch import nn
 
-from basic_nerf import renderer, utils
+from basic_nerf import EarlyStopping, NeRF, PositionalEncoder, renderer, utils
+from basic_nerf.models import ConfigModel
+
+
+def init_models(config: ConfigModel, device: torch.device):
+    r"""
+    Initialize models, encoders, and optimizer for NeRF training.
+    """
+    # Encoders
+    encoder = PositionalEncoder(
+        config.encoders.input_dimensions,
+        config.encoders.number_of_frequencies,
+        log_space=config.encoders.frequencies_log_space,
+    )
+
+    def encode(x):
+        return encoder(x)
+
+    # View direction encoders
+    if config.encoders.use_viewdirs:
+        encoder_viewdirs = PositionalEncoder(
+            config.encoders.input_dimensions,
+            config.encoders.number_of_frequency_views,
+            log_space=config.encoders.frequencies_log_space,
+        )
+
+        def encode_viewdirs(x):
+            return encoder_viewdirs(x)
+
+        d_viewdirs = encoder_viewdirs.d_output
+    else:
+        encode_viewdirs = None
+        d_viewdirs = None
+
+    # Models
+    model = NeRF(
+        encoder.d_output,
+        n_layers=config.model.number_of_layers,
+        d_filter=config.model.filter_dimensions,
+        skip=config.model.skip,
+        d_viewdirs=d_viewdirs,
+    )
+    model.to(device)
+    model_params = list(model.parameters())
+    if config.model.use_fine_model:
+        fine_model = NeRF(
+            encoder.d_output,
+            n_layers=config.model.number_of_layers,
+            d_filter=config.model.fine_filter_dimensions,
+            skip=config.model.skip,
+            d_viewdirs=d_viewdirs,
+        )
+        fine_model.to(device)
+        model_params = model_params + list(fine_model.parameters())
+    else:
+        fine_model = None
+
+    # Optimizer
+    optimizer = torch.optim.Adam(model_params, lr=config.optimizer.learning_rate)
+
+    # Early Stopping
+    warmup_stopper = EarlyStopping(patience=50)
+
+    return model, fine_model, encode, encode_viewdirs, optimizer, warmup_stopper
 
 
 def nerf_forward(
@@ -122,6 +185,8 @@ def nerf_forward(
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    with open("data/tiny_nerf_data.npz", "r") as input_config_file:
+        ConfigModel.model_validate_json(input_config_file.read())
     data = np.load("data/tiny_nerf_data.npz")
     images = data["images"]
     poses = data["poses"]
