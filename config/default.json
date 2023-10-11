@@ -1,0 +1,29 @@
+{
+    "encoders": {
+        "input_dimensions": 3,
+        "number_of_frequencies": 10,
+        "frequencies_log_space": true,
+        "use_viewdirs": true
+    },
+    "stratified_sampling": {
+        "number_of_samples": 64,
+        "perturb": true,
+        "inverse_depth": false
+    },
+    "model": {
+        "filter_dimensions": 128,
+        "number_of_layers": 2,
+        "skip": [],
+        "use_fine_model": true,
+        "fine_filter_dimensions": 128,
+        "number_of_fine_layers": 6
+    },
+    "hierarchical_sampling": {
+        "number_of_hierarchical_samples": 64,
+        "perturb_hierarchical": false
+    },
+    "optimizer": {
+        "learning_rate": 5e-4
+    },
+    "trainging": {}
+}

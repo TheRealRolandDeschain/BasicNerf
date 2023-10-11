@@ -8,7 +8,7 @@
             "name": "main",
             "type": "python",
             "request": "launch",
-            "program": "src/main.py",
+            "program": "basic_nerf/main.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }
