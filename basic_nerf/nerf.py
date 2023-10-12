@@ -7,7 +7,7 @@
 #
 #
 # --- imports -----------------------------------------------------------------
-from typing import Optional, Tuple
+from typing import List, Optional
 
 import torch
 from torch import nn
@@ -23,7 +23,9 @@ class NeRF(nn.Module):
         d_input: int = 3,
         n_layers: int = 8,
         d_filter: int = 256,
-        skip: Tuple[int] = (4,),
+        skip: List[int] = [
+            4,
+        ],
         d_viewdirs: Optional[int] = None,
     ):
         super().__init__()

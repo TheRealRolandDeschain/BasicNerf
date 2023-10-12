@@ -7,7 +7,7 @@
 #
 #
 # --- imports -----------------------------------------------------------------
-from typing import Tuple
+from typing import List
 
 from pydantic import BaseModel
 
@@ -29,7 +29,7 @@ class StratifiedSamplingConfigModel(BaseModel):
 class ArchitectureConfigModel(BaseModel):
     filter_dimensions: int
     number_of_layers: int
-    skip: Tuple[int]
+    skip: List[int]
     use_fine_model: bool
     fine_filter_dimensions: int
     number_of_fine_layers: int
@@ -45,6 +45,10 @@ class OptimizerConfigModel(BaseModel):
 
 
 class TrainingConfigModel(BaseModel):
+    number_of_samples: int
+    test_image_idx: int
+    near: float
+    far: float
     number_of_iterations: int
     batch_size: int  # TODO validation to power of 2
     one_image_per_step: bool

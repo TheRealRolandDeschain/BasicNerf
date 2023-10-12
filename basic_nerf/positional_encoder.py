@@ -8,6 +8,7 @@
 #
 # --- imports -----------------------------------------------------------------
 import torch
+from torch import nn
 
 
 class PositionalEncoder(nn.Module):
